@@ -1,0 +1,18 @@
+version: "3.1"
+services:
+  tatanka:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./simulations:/tmp/tatanka/simulations
+      - ./config.yaml:/etc/tatanka/config.yaml
+    restart: always
+    tty: true
+    depends_on:
+      - cassandra
+
+  cassandra:
+    image: cassandra:4.0
+    expose:
+      - 9042
