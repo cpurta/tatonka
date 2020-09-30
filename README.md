@@ -20,6 +20,22 @@ Tatanka is an experimental cryptocurrency trading bot written in Go and uses Apa
 - Running a bot, and trading in general requires careful study of the risks and parameters involved. A wrong setting can cause you a major loss.
 - Never leave the bot un-monitored for long periods of time. Tatanka doesn't know when to stop, so be prepared to stop it if too much loss occurs.
 
+## Documentation
+
+**In the works**
+
+## Contribution
+
+We would love for you to help out with building Tatanka!
+
+Please see the CONTRIBUTING.md file to see how you can help the project.
+
+## Notable Contributors
+
+- [this_could_be_you](https://github.com/cpurta)
+
+---
+
 ## License
 
 MIT
