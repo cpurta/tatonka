@@ -5,6 +5,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// SimRunner implements the trading simulation logic for the
+// 'sim' CLI command.
 type SimRunner struct {
 	ConfigFile           string
 	Strategy             string

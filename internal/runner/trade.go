@@ -15,6 +15,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// TradeRunner holds the necessary data an implementation for the
+// 'trade' CLI command. This runner is able to connect to a Cassandra
+// cluster (with the user-provided configuration) and fetch/insert
+// trading data.
 type TradeRunner struct {
 	ConfigFile           string
 	Strategy             string
