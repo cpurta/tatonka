@@ -5,6 +5,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// ListSelectorCommand Print all available exchange options
+// CLI Command
 func ListSelectorCommand() *cli.Command {
 	var (
 		listSelectorRunner = &runner.ListSelectorRunner{}

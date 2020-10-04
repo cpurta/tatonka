@@ -5,6 +5,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// BackfillCommand returns the history of trades
+// with the option to different path for config file,
+// number of days with occurred or with debug
+// CLI Command
 func BackfillCommand() *cli.Command {
 	var (
 		backfillRunner = &runner.BackfillRunner{}
