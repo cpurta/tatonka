@@ -1,8 +1,6 @@
 package factories
 
 import (
-	"strconv"
-
 	"github.com/cpurta/tatanka/internal/model"
 )
 
@@ -18,13 +16,11 @@ func (factory *PeriodFactory) GetPeriod(trades model.Trades) *model.Period {
 	)
 
 	for i, trade := range trades {
-		tradePrice, _ := strconv.ParseFloat(trade.Price, 64)
-
-		period.High = max(period.High, tradePrice)
-		period.Low = min(period.Low, tradePrice)
+		period.High = max(period.High, trade.Price)
+		period.Low = min(period.Low, trade.Price)
 
 		if i == len(trades)-1 {
-			period.Close = tradePrice
+			period.Close = trade.Price
 		}
 	}
 
