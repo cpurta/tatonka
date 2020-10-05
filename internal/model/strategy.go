@@ -1,5 +1,6 @@
 package model
 
+// Strategy represents a market strategy to determine a signal in the market.
 type Strategy interface {
 	Name() string
 	Description() string
