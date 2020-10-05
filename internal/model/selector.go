@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+// Selector holds info related to the exchange, and asset/currency pair tatanka
+// should pull trade info, balance info for
 type Selector struct {
 	ExchangeID string
 	ProductID  string
@@ -13,6 +15,8 @@ type Selector struct {
 	Currency   string
 }
 
+// String provides a string representaion of a Selector and will return in the
+// format "{exchange_slug}.{product_id}" (e.g. gdax.BTC-USD)
 func (selector *Selector) String() string {
 	return fmt.Sprintf("%s.%s", selector.ExchangeID, selector.ProductID)
 }

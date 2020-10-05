@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Trade represents a trade that has occurred on a crypto-currency exchange
 type Trade struct {
 	TradeID string
 	Price   float64

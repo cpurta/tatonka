@@ -1,5 +1,6 @@
 package model
 
+// Product holds "product" info from an exchange
 type Product struct {
 	Asset          string `json:"asset"`
 	Currency       string `json:"currency"`
