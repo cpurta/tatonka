@@ -33,7 +33,7 @@ func (runner *BackfillRunner) Run(cli *cli.Context) error {
 		err              error
 	)
 
-	startBackfill := time.Now().Add(time.Hour * 24).Truncate(time.Hour)
+	startBackfill := time.Now().Add(time.Hour * -24 * time.Duration(runner.Days)).Truncate(time.Hour)
 
 	if cli.NArg() == 0 {
 		return errors.New("you must specify a selector (i.e. {exchange_slug}.{product_id})")
@@ -50,8 +50,6 @@ func (runner *BackfillRunner) Run(cli *cli.Context) error {
 	if err = yaml.Unmarshal(configFile, &config); err != nil {
 		return err
 	}
-
-	println("Cassandra hosts:", config.CassandraConfig.Cluster)
 
 	cassandraCluster = gocql.NewCluster(config.CassandraConfig.Cluster...)
 	cassandraCluster.Keyspace = config.CassandraConfig.Keyspace
@@ -71,6 +69,8 @@ func (runner *BackfillRunner) Run(cli *cli.Context) error {
 		return fmt.Errorf("%s exchange is not supported", selector.ExchangeID)
 	}
 
+	fmt.Printf("backfilling %d of days historical data for %s\n", runner.Days, selector.String())
+
 	for {
 		trades, err := exchange.GetTrades(selector.ProductID)
 		if err != nil {
@@ -86,6 +86,8 @@ func (runner *BackfillRunner) Run(cli *cli.Context) error {
 		}
 
 		runner.insertTrades(selector.String(), trades)
+
+		print(".")
 	}
 
 	return nil

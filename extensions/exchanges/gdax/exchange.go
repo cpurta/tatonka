@@ -61,10 +61,14 @@ func (exchange *gdaxExchange) GetTrades(productID string) ([]*model.Trade, error
 	}
 
 	for _, trade := range gdaxTrades {
+		size, _ := strconv.ParseFloat(trade.Size, 64)
+
+		price, _ := strconv.ParseFloat(trade.Price, 64)
+
 		trades = append(trades, &model.Trade{
 			TradeID: strconv.Itoa(trade.TradeID),
-			Size:    trade.Size,
-			Price:   trade.Price,
+			Size:    size,
+			Price:   price,
 			Time:    trade.Time.Time(),
 			Side:    trade.Side,
 		})

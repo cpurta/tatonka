@@ -5,14 +5,22 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./simulations:/tmp/tatanka/simulations
-      - ./config.yaml:/etc/tatanka/config.yaml
-    restart: always
+      - ../simulations:/tmp/tatanka/simulations
+      - ../config.yaml:/etc/tatanka/config.yaml:ro
     tty: true
     depends_on:
-      - cassandra
+      cassandra:
+        condition: service_healthy
 
   cassandra:
     image: cassandra:4.0
-    expose:
-      - 9042
+    ports:
+        - "9042:9042"
+    restart: always
+    volumes:
+      - ../assets/cassandra:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
