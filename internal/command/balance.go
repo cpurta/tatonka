@@ -5,9 +5,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// BalanceCommand Return account Balance
+// BalanceCommand returns the current account balances
 // with the option to change to another currency
-// and change config file path
 // CLI Command
 func BalanceCommand() *cli.Command {
 	var (

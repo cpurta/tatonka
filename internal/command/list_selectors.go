@@ -5,7 +5,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// ListSelectorCommand Print all available exchange options
+// ListSelectorCommand prints all available product ids for each supported exchange
 // CLI Command
 func ListSelectorCommand() *cli.Command {
 	var (

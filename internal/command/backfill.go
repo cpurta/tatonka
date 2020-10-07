@@ -5,9 +5,9 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// BackfillCommand returns the history of trades
-// with the option to different path for config file,
-// number of days with occurred or with debug
+// BackfillCommand allows for historical data to be manually
+// back filled into a configured Cassandra cluster
+// for trading simulations
 // CLI Command
 func BackfillCommand() *cli.Command {
 	var (

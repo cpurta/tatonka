@@ -12,7 +12,6 @@ var (
 	_ model.Exchange = &gdaxExchange{}
 )
 
-// gdaxExchange implements the representation of a coinbase(gdax) exchange
 type gdaxExchange struct {
 	client            *coinbasepro.Client
 	tradeCursor       *coinbasepro.Cursor
@@ -22,7 +21,7 @@ type gdaxExchange struct {
 	BackfillRateLimit int64
 }
 
-// NewGDAXExchange add new exchange to coinbase(gdax)
+// NewGDAXExchange returns a new Coinbase(gdax) Exchange interface implementation
 func NewGDAXExchange(key, passphrase, secret string, httpClient *http.Client) *gdaxExchange {
 	client := coinbasepro.NewClient()
 
@@ -44,7 +43,7 @@ func NewGDAXExchange(key, passphrase, secret string, httpClient *http.Client) *g
 	}
 }
 
-// GetTrades  returns coinbase(gdax) transaction history
+// GetTrades returns the transaction history for a specific product on the Coinbase(gdax) exchange
 func (exchange *gdaxExchange) GetTrades(productID string) ([]*model.Trade, error) {
 	var (
 		gdaxTrades []coinbasepro.Trade
@@ -76,7 +75,7 @@ func (exchange *gdaxExchange) GetTrades(productID string) ([]*model.Trade, error
 	return trades, nil
 }
 
-// GetBalance return account balance on coinbase(gdax)
+// GetBalance returns the current account balance held on Coinbase(gdax)
 func (exchange *gdaxExchange) GetBalance(currency string, asset string) (*model.Balance, error) {
 	var (
 		accounts []coinbasepro.Account
@@ -103,7 +102,7 @@ func (exchange *gdaxExchange) GetBalance(currency string, asset string) (*model.
 	return balance, nil
 }
 
-// GetQuote returns the price for the exchange made
+// GetQuote returns the current quote price of a product on Coinbase (gdax)
 func (exchange *gdaxExchange) GetQuote(productID string) (*model.Quote, error) {
 	var (
 		ticker coinbasepro.Ticker
