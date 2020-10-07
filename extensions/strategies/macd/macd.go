@@ -6,6 +6,8 @@ import (
 	"github.com/cpurta/tatanka/internal/model"
 )
 
+var _ model.Strategy = &macd{}
+
 type macd struct {
 	short int
 	long  int
@@ -16,6 +18,10 @@ func NewMACD(short, long int) *macd {
 		short: short,
 		long:  long,
 	}
+}
+
+func (m *macd) Name() string {
+	return "macd"
 }
 
 func (m *macd) Description() string {

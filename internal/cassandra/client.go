@@ -7,6 +7,6 @@ import (
 )
 
 type Client interface {
-	GetTradesBetween(start, end time.Time) ([]*model.Trade, error)
+	GetTradesBetween(selector string, start, end time.Time) ([]*model.Trade, error)
 	InsertTrade(selector string, trade *model.Trade) error
 }
