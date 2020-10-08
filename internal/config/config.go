@@ -1,6 +1,6 @@
 package config
 
-// Config holdsthe entire application configuration.
+// Config holds the entire application configuration.
 type Config struct {
 	CassandraConfig `yaml:"cassandra"`
 	GDAXConfig      *GDAXConfig `yaml:"gdax"`
