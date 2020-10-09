@@ -4,12 +4,18 @@ import (
 	"github.com/cpurta/tatanka/internal/model"
 )
 
+// PeriodFactory is a factory of Periods.
+// Each Period consolidates data about a range of changes, and can be
+// obtained through the  GetPeriod method.
 type PeriodFactory struct{}
 
+// NewPeriodFactory returns a new instance of PeriodFactory.
 func NewPeriodFactory() *PeriodFactory {
 	return &PeriodFactory{}
 }
 
+// GetPeriod consolidates information about a certain amount of trades, returning
+// the high, low and closing value of the period.
 func (factory *PeriodFactory) GetPeriod(trades model.Trades) *model.Period {
 	var (
 		period = &model.Period{}
