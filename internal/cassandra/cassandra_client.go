@@ -1,6 +1,7 @@
 package cassandra
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/cpurta/tatanka/internal/model"
@@ -46,16 +47,27 @@ func (client *cassandraClient) GetTradesBetween(start, end time.Time) ([]*model.
 // InsertTrade add new trade
 func (client *cassandraClient) InsertTrade(selector string, trade *model.Trade) error {
 	var (
-		query = `INSERT INTO trades (id,selector,trade_id,price,size,time,side) VALUES (?,?,?,?,?,?,?)`
+		query   = `INSERT INTO trades (id,selector,trade_id,price,size,time,side) VALUES (?,?,?,?,?,?,?)`
+		tradeID = trade.ID()
+		uuid    gocql.UUID
+		err     error
 	)
 
+	if len(tradeID) != 16 {
+		return fmt.Errorf("trade id must be exaclty 16 bytes long: %s", tradeID)
+	}
+
+	if uuid, err = gocql.UUIDFromBytes([]byte(tradeID)); err != nil {
+		return fmt.Errorf("unable to create gocql UUID: %s", err.Error())
+	}
+
 	return client.session.Query(query,
-		gocql.TimeUUID(),
+		uuid,
 		selector,
 		trade.TradeID,
 		trade.Price,
 		trade.Size,
-		trade.Time.Format(time.RFC3339),
+		trade.Time,
 		trade.Side,
 	).Exec()
 }

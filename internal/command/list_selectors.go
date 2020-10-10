@@ -5,8 +5,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// ListSelectorCommand prints all available product ids for each supported exchange
-// CLI Command
+// ListSelectorCommand returns the definition for the 'list-selectors'
+// CLI command.
 func ListSelectorCommand() *cli.Command {
 	var (
 		listSelectorRunner = &runner.ListSelectorRunner{}

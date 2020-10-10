@@ -11,8 +11,8 @@ func TradeCommand() *cli.Command {
 	)
 
 	cmd := &cli.Command{
-		Name:  "sim",
-		Usage: "run a simulation on backfilled data",
+		Name:  "trade",
+		Usage: "run trading bot against live market data",
 		Flags: []cli.Flag{
 			&cli.PathFlag{
 				Name:        "config",
@@ -186,6 +186,11 @@ func TradeCommand() *cli.Command {
 				Name:        "verbose",
 				Usage:       "print status lines on every period",
 				Destination: &tradeRunner.Verbose,
+			},
+			&cli.BoolFlag{
+				Name:        "paper",
+				Usage:       "use paper trading mode (no real trades will take place)",
+				Destination: &tradeRunner.PaperTrade,
 			},
 			&cli.BoolFlag{
 				Name:        "silent",

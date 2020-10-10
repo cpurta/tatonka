@@ -1,3 +1,8 @@
+cassandra:
+  cluster:
+    - "cassandra"
+  keyspace: "tatanka"
+
 gdax:
   api_key: "your_gdax_api_key"
   api_secret: "your_gdax_api_secret"

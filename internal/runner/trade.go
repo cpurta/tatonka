@@ -15,6 +15,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// TradeRunner holds the necessary data an implementation for the
+// 'trade' CLI command. This runner is able to connect to a Cassandra
+// cluster (with the user-provided configuration) and fetch/insert
+// trading data.
 type TradeRunner struct {
 	ConfigFile           string
 	Strategy             string
@@ -48,7 +52,7 @@ type TradeRunner struct {
 	BacktesterGeneration int64
 	Verbose              bool
 	Silent               bool
-	Paper                bool
+	PaperTrade           bool
 	cassandraClient      cassandra.Client
 }
 
@@ -60,7 +64,7 @@ func (runner *TradeRunner) Run(cli *cli.Context) error {
 		exchange         model.Exchange
 		cassandraCluster *gocql.ClusterConfig
 		cassandraSession *gocql.Session
-		startBackfill    = time.Now().Add(time.Hour * 24).Truncate(time.Hour)
+		startBackfill    = time.Now().Add(time.Hour * -24).Truncate(time.Hour)
 		err              error
 	)
 
@@ -79,8 +83,6 @@ func (runner *TradeRunner) Run(cli *cli.Context) error {
 	if err = yaml.Unmarshal(configFile, &config); err != nil {
 		return err
 	}
-
-	println("Cassandra hosts:", config.CassandraConfig.Cluster)
 
 	cassandraCluster = gocql.NewCluster(config.CassandraConfig.Cluster...)
 	cassandraCluster.Keyspace = config.CassandraConfig.Keyspace
@@ -109,20 +111,30 @@ func (runner *TradeRunner) Run(cli *cli.Context) error {
 		}
 
 		if len(trades) == 0 {
+			println("recieved 0 historical trades from exchange, moving on to watching market...")
 			break
 		}
 
 		if trades[0].Time.Before(startBackfill) {
+			println("finished backfilling pre-roll data")
 			break
 		}
 
 		runner.insertTrades(selector.String(), trades)
 	}
 
-	if runner.Paper {
+	if runner.PaperTrade {
 		println("----- STARTING PAPER TRADING -----")
 	} else {
 		println("----- STARTING LIVE TRADING ------")
+	}
+
+	for {
+		println("mock watching live market data")
+
+		// TODO: watch live market data and feed to strategies to determine buy/sell signals
+
+		time.Sleep(time.Minute * 1)
 	}
 
 	return nil
