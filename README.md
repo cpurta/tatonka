@@ -32,7 +32,8 @@ Please see the CONTRIBUTING.md file to see how you can help the project.
 
 ## Notable Contributors
 
-- [this_could_be_you](https://github.com/cpurta)
+- [DeathWofl](https://github.com/deathwofl)
+- [ibraimgm](https://github.com/ibraimgm)
 
 ---
 
