@@ -5,6 +5,9 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// BalanceCommand returns the current account balances
+// with the option to change to another currency
+// CLI Command
 func BalanceCommand() *cli.Command {
 	var (
 		balanceRunner = &runner.BalanceRunner{}

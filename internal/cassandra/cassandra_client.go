@@ -14,12 +14,14 @@ type cassandraClient struct {
 	session *gocql.Session
 }
 
+// NewCassandraClient returns a new Cassandra Client interface for interacting with Cassandra
 func NewCassandraClient(session *gocql.Session) *cassandraClient {
 	return &cassandraClient{
 		session: session,
 	}
 }
 
+// GetTradesBetween returns the transactions that occurred in a date range
 func (client *cassandraClient) GetTradesBetween(start, end time.Time) ([]*model.Trade, error) {
 	var (
 		query  = `SELECT trade_id, price, size, time, side FROM trades WHERE selector = ? AND time BETWEEN ? AND ?`
@@ -42,6 +44,7 @@ func (client *cassandraClient) GetTradesBetween(start, end time.Time) ([]*model.
 	return trades, nil
 }
 
+// InsertTrade add new trade
 func (client *cassandraClient) InsertTrade(selector string, trade *model.Trade) error {
 	var (
 		query   = `INSERT INTO trades (id,selector,trade_id,price,size,time,side) VALUES (?,?,?,?,?,?,?)`

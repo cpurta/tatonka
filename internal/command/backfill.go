@@ -5,6 +5,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// BackfillCommand allows for historical data to be manually
+// back filled into a configured Cassandra cluster
+// for trading simulations
+// CLI Command
 func BackfillCommand() *cli.Command {
 	var (
 		backfillRunner = &runner.BackfillRunner{}
