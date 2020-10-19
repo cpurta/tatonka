@@ -25,6 +25,7 @@ type coinbaseProExchange struct {
 	BackfillRateLimit int64
 }
 
+// NewCoinbaseProExchange returns an Exchange interface to interact with
 func NewCoinbaseProExchange(key, passphrase, secret string, httpClient *http.Client) (*coinbaseProExchange, error) {
 	var (
 		client = coinbasepro.NewClient()
@@ -107,6 +108,7 @@ func (exchange *coinbaseProExchange) Trades(productID string) <-chan *model.Trad
 	return exchange.tradeChan
 }
 
+// GetTrades returns the transaction history for a specific product on the Coinbase(gdax) exchange
 func (exchange *coinbaseProExchange) HistoricalTrades(productID string) ([]*model.Trade, error) {
 	var (
 		gdaxTrades []coinbasepro.Trade
@@ -142,6 +144,7 @@ func (exchange *coinbaseProExchange) HistoricalTrades(productID string) ([]*mode
 	return trades, nil
 }
 
+// Balance returns the current account balance held on Coinbase(gdax)
 func (exchange *coinbaseProExchange) Balance(currency string, asset string) (*model.Balance, error) {
 	var (
 		accounts []coinbasepro.Account
@@ -168,6 +171,7 @@ func (exchange *coinbaseProExchange) Balance(currency string, asset string) (*mo
 	return balance, nil
 }
 
+// Quote returns the current quote price of a product on Coinbase (gdax)
 func (exchange *coinbaseProExchange) Quote(productID string) (*model.Quote, error) {
 	var (
 		ticker coinbasepro.Ticker
