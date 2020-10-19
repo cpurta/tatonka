@@ -1,19 +1,23 @@
-package gdax
+package coinbasepro
 
 import (
 	"net/http"
 	"strconv"
+	"sync"
 
 	"github.com/cpurta/tatanka/internal/model"
+	"github.com/gorilla/websocket"
 	coinbasepro "github.com/preichenberger/go-coinbasepro/v2"
 )
 
 var (
-	_ model.Exchange = &gdaxExchange{}
+	_ model.Exchange = &coinbaseProExchange{}
 )
 
-type gdaxExchange struct {
+type coinbaseProExchange struct {
 	client            *coinbasepro.Client
+	wsConn            *websocket.Conn
+	tradeChan         chan *model.Trade
 	tradeCursor       *coinbasepro.Cursor
 	historyScan       string
 	makerFee          float64
@@ -21,8 +25,13 @@ type gdaxExchange struct {
 	BackfillRateLimit int64
 }
 
-func NewGDAXExchange(key, passphrase, secret string, httpClient *http.Client) *gdaxExchange {
-	client := coinbasepro.NewClient()
+func NewCoinbaseProExchange(key, passphrase, secret string, httpClient *http.Client) (*coinbaseProExchange, error) {
+	var (
+		client = coinbasepro.NewClient()
+		dialer websocket.Dialer
+		conn   *websocket.Conn
+		err    error
+	)
 
 	client.UpdateConfig(&coinbasepro.ClientConfig{
 		BaseURL:    "https://api.pro.coinbase.com",
@@ -33,16 +42,72 @@ func NewGDAXExchange(key, passphrase, secret string, httpClient *http.Client) *g
 
 	client.HTTPClient = httpClient
 
-	return &gdaxExchange{
+	if conn, _, err = dialer.Dial("wss://ws-feed.pro.coinbase.com", nil); err != nil {
+		return nil, err
+	}
+
+	return &coinbaseProExchange{
 		client:            client,
+		wsConn:            conn,
+		tradeChan:         make(chan *model.Trade, 1000),
 		historyScan:       "backward",
 		makerFee:          0.0,
 		takerFee:          0.3,
 		BackfillRateLimit: int64(335),
-	}
+	}, nil
 }
 
-func (exchange *gdaxExchange) GetTrades(productID string) ([]*model.Trade, error) {
+func (exchange *coinbaseProExchange) Start(productID string) error {
+	var once sync.Once
+
+	start := func() {
+		var (
+			subscribe = coinbasepro.Message{
+				Type: "subscribe",
+				Channels: []coinbasepro.MessageChannel{
+					coinbasepro.MessageChannel{
+						Name: "heartbeat",
+						ProductIds: []string{
+							productID,
+						},
+					},
+					coinbasepro.MessageChannel{
+						Name: "level2",
+						ProductIds: []string{
+							productID,
+						},
+					},
+				},
+			}
+			err error
+		)
+
+		if err = exchange.wsConn.WriteJSON(subscribe); err != nil {
+			println("unable to write json message to coinbase pro websocket", err.Error())
+		}
+	}
+
+	once.Do(start)
+
+	for {
+		message := coinbasepro.Message{}
+
+		if err := exchange.wsConn.ReadJSON(&message); err != nil {
+			println("unable to read json message from coinbase pro websocket feed", err.Error())
+			continue
+		}
+
+		println("recieved coinbase pro message:", message.Type)
+	}
+
+	return nil
+}
+
+func (exchange *coinbaseProExchange) Trades(productID string) <-chan *model.Trade {
+	return exchange.tradeChan
+}
+
+func (exchange *coinbaseProExchange) HistoricalTrades(productID string) ([]*model.Trade, error) {
 	var (
 		gdaxTrades []coinbasepro.Trade
 		trades     = make([]*model.Trade, 0)
@@ -77,7 +142,7 @@ func (exchange *gdaxExchange) GetTrades(productID string) ([]*model.Trade, error
 	return trades, nil
 }
 
-func (exchange *gdaxExchange) GetBalance(currency string, asset string) (*model.Balance, error) {
+func (exchange *coinbaseProExchange) Balance(currency string, asset string) (*model.Balance, error) {
 	var (
 		accounts []coinbasepro.Account
 		balance  = &model.Balance{}
@@ -103,7 +168,7 @@ func (exchange *gdaxExchange) GetBalance(currency string, asset string) (*model.
 	return balance, nil
 }
 
-func (exchange *gdaxExchange) GetQuote(productID string) (*model.Quote, error) {
+func (exchange *coinbaseProExchange) Quote(productID string) (*model.Quote, error) {
 	var (
 		ticker coinbasepro.Ticker
 		quote  = &model.Quote{}

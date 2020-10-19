@@ -22,7 +22,7 @@ func NewCassandraClient(session *gocql.Session) *cassandraClient {
 
 func (client *cassandraClient) GetTradesBetween(selector string, start, end time.Time) ([]*model.Trade, error) {
 	var (
-		query  = `SELECT trade_id, price, size, time, side FROM trades WHERE selector = ? AND time BETWEEN ? AND ?`
+		query  = `SELECT trade_id, price, size, time, side FROM trades WHERE selector = ? AND (time >= ? AND time <= ?)`
 		iter   *gocql.Iter
 		trade  = &model.Trade{}
 		trades = make([]*model.Trade, 0)
