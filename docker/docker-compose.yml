@@ -13,12 +13,12 @@ services:
         condition: service_healthy
 
   cassandra:
-    image: cassandra:4.0
+    build:
+      context: .
+      dockerfile: DockerfileCassandra
     ports:
         - "9042:9042"
     restart: always
-    volumes:
-      - ../assets/cassandra:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
       interval: 15s

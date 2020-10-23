@@ -7,4 +7,5 @@ type Exchange interface {
 	HistoricalTrades(productID string) ([]*Trade, error)
 	Balance(currency string, asset string) (*Balance, error)
 	Quote(productID string) (*Quote, error)
+	Start(productID string) error
 }

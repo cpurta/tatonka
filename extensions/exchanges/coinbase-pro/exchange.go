@@ -1,6 +1,7 @@
 package coinbasepro
 
 import (
+	"io"
 	"net/http"
 	"strconv"
 	"sync"
@@ -12,6 +13,7 @@ import (
 
 var (
 	_ model.Exchange = &coinbaseProExchange{}
+	_ io.Closer      = &coinbaseProExchange{}
 )
 
 type coinbaseProExchange struct {
@@ -23,6 +25,7 @@ type coinbaseProExchange struct {
 	makerFee          float64
 	takerFee          float64
 	BackfillRateLimit int64
+	done              chan struct{}
 }
 
 // NewCoinbaseProExchange returns an Exchange interface to interact with
@@ -78,6 +81,12 @@ func (exchange *coinbaseProExchange) Start(productID string) error {
 							productID,
 						},
 					},
+					coinbasepro.MessageChannel{
+						Name: "ticker",
+						ProductIds: []string{
+							productID,
+						},
+					},
 				},
 			}
 			err error
@@ -98,7 +107,24 @@ func (exchange *coinbaseProExchange) Start(productID string) error {
 			continue
 		}
 
-		println("recieved coinbase pro message:", message.Type)
+		if message.Type == "ticker" {
+			tradeID := strconv.Itoa(message.TradeID)
+			price, _ := strconv.ParseFloat(message.Price, 64)
+			size, _ := strconv.ParseFloat(message.Size, 64)
+
+			exchange.tradeChan <- &model.Trade{
+				TradeID: tradeID,
+				Price:   price,
+				Size:    size,
+				Time:    message.Time.Time(),
+				Side:    message.Side,
+			}
+		}
+
+		select {
+		case <-exchange.done:
+			break
+		}
 	}
 
 	return nil
@@ -187,4 +213,12 @@ func (exchange *coinbaseProExchange) Quote(productID string) (*model.Quote, erro
 	quote.Ask, _ = strconv.ParseFloat(ticker.Ask, 64)
 
 	return quote, nil
+}
+
+func (exchange *coinbaseProExchange) Close() error {
+	exchange.done <- struct{}{}
+
+	close(exchange.tradeChan)
+
+	return exchange.wsConn.Close()
 }
