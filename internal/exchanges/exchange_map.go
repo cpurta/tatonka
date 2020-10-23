@@ -3,7 +3,7 @@ package exchanges
 import (
 	"net/http"
 
-	"github.com/cpurta/tatanka/extensions/exchanges/gdax"
+	coinbasepro "github.com/cpurta/tatanka/extensions/exchanges/coinbase-pro"
 	"github.com/cpurta/tatanka/internal/config"
 	"github.com/cpurta/tatanka/internal/model"
 )
@@ -12,16 +12,25 @@ import (
 // The concrete Exchange implementation is determined by the exchangeID, and
 // the caller must be wary that this function will return nil if the exchangeID
 // is unknown.
-func GetExchange(exchangeID string, config *config.Config) model.Exchange {
+func GetExchange(exchangeID string, config *config.Config) (model.Exchange, error) {
+	var (
+		exchange model.Exchange
+		err      error
+	)
+
 	switch exchangeID {
-	case "gdax":
-		return gdax.NewGDAXExchange(
+	case "coinbasepro", "gdax":
+		if exchange, err = coinbasepro.NewCoinbaseProExchange(
 			config.GDAXConfig.APIKey,
 			config.GDAXConfig.APIPassphrase,
 			config.GDAXConfig.APISecret,
 			http.DefaultClient,
-		)
+		); err != nil {
+			return nil, err
+		}
+
+		return exchange, nil
 	}
 
-	return nil
+	return nil, nil
 }

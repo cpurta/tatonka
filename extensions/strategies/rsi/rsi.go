@@ -11,7 +11,7 @@ var _ model.Strategy = &rsi{}
 
 type rsi struct{}
 
-func RSI() *rsi {
+func NewRSI() *rsi {
 	return &rsi{}
 }
 

@@ -17,6 +17,10 @@ type Trade struct {
 	Side    string
 }
 
+func (t *Trade) String() string {
+	return fmt.Sprintf("trade [%s]: %s %s %f %f", t.Time.Format(time.RFC3339), t.TradeID, t.Side, t.Size, t.Price)
+}
+
 func (t *Trade) ID() string {
 	hash := md5.New()
 	io.WriteString(hash, t.TradeID)

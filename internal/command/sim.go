@@ -1,6 +1,8 @@
 package command
 
 import (
+	"time"
+
 	"github.com/cpurta/tatanka/internal/runner"
 	"github.com/urfave/cli/v2"
 )
@@ -181,6 +183,12 @@ func SimCommand() *cli.Command {
 				Usage:       "creates a json file in simulations with the generation number",
 				Destination: &simRunner.BacktesterGeneration,
 				Value:       -1,
+			},
+			&cli.DurationFlag{
+				Name:        "period",
+				Usage:       "the time period which trades are aggregated",
+				Destination: &simRunner.Period,
+				Value:       time.Minute * 1,
 			},
 			&cli.BoolFlag{
 				Name:        "verbose",

@@ -22,16 +22,16 @@ func NewCassandraClient(session *gocql.Session) *cassandraClient {
 }
 
 // GetTradesBetween returns the transactions that occurred in a date range
-func (client *cassandraClient) GetTradesBetween(start, end time.Time) ([]*model.Trade, error) {
+func (client *cassandraClient) GetTradesBetween(productID string, start, end time.Time) ([]*model.Trade, error) {
 	var (
-		query  = `SELECT trade_id, price, size, time, side FROM trades WHERE selector = ? AND time BETWEEN ? AND ?`
+		query  = `SELECT trade_id, price, size, time, side FROM trades WHERE selector = ? AND (time >= ? AND time <= ?)`
 		iter   *gocql.Iter
 		trade  = &model.Trade{}
 		trades = make([]*model.Trade, 0)
 		err    error
 	)
 
-	iter = client.session.Query(query, start.Format(time.RFC3339), end.Format(time.RFC3339)).Iter()
+	iter = client.session.Query(query, productID, start.Format(time.RFC3339), end.Format(time.RFC3339)).Iter()
 
 	for iter.Scan(&trade.TradeID, &trade.Price, &trade.Size, &trade.Time, &trade.Side) {
 		trades = append(trades, trade)

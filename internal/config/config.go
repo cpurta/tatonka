@@ -4,6 +4,7 @@ package config
 type Config struct {
 	CassandraConfig `yaml:"cassandra"`
 	GDAXConfig      *GDAXConfig `yaml:"gdax"`
+	Strategies      []Strategy  `yaml:"strategies"`
 }
 
 // GDAXConfig is the collection of configuration values
@@ -19,4 +20,9 @@ type GDAXConfig struct {
 type CassandraConfig struct {
 	Cluster  []string `yaml:"cluster"`
 	Keyspace string   `yaml:"keyspace"`
+}
+
+type Strategy struct {
+	Name    string                 `yaml:"name"`
+	Options map[string]interface{} `yaml:"options"`
 }

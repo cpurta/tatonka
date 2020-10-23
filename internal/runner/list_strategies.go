@@ -3,6 +3,7 @@ package runner
 import (
 	"fmt"
 
+	"github.com/cpurta/tatanka/extensions/strategies/macd"
 	"github.com/cpurta/tatanka/extensions/strategies/rsi"
 	"github.com/cpurta/tatanka/internal/model"
 	. "github.com/logrusorgru/aurora"
@@ -29,6 +30,7 @@ func (runner *ListStrategiesRunner) Run(cli *cli.Context) error {
 
 func (runner *ListStrategiesRunner) getStrategies() []model.Strategy {
 	return []model.Strategy{
-		rsi.RSI(),
+		rsi.NewRSI(),
+		macd.NewMACD(26, 12),
 	}
 }

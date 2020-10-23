@@ -63,16 +63,14 @@ func (runner *BackfillRunner) Run(cli *cli.Context) error {
 
 	runner.cassandraClient = cassandra.NewCassandraClient(cassandraSession)
 
-	exchange = exchanges.GetExchange(selector.ExchangeID, config)
-
-	if exchange == nil {
+	if exchange, err = exchanges.GetExchange(selector.ExchangeID, config); err != nil {
 		return fmt.Errorf("%s exchange is not supported", selector.ExchangeID)
 	}
 
 	fmt.Printf("backfilling %d of days historical data for %s\n", runner.Days, selector.String())
 
 	for {
-		trades, err := exchange.GetTrades(selector.ProductID)
+		trades, err := exchange.HistoricalTrades(selector.ProductID)
 		if err != nil {
 			return fmt.Errorf("unable to get historical trades for %s: %s", selector.ProductID, err.Error())
 		}

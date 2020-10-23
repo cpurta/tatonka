@@ -49,17 +49,15 @@ func (runner *BalanceRunner) Run(cli *cli.Context) error {
 		return err
 	}
 
-	exchange = exchanges.GetExchange(selector.ExchangeID, config)
-
-	if exchange == nil {
+	if exchange, err = exchanges.GetExchange(selector.ExchangeID, config); err != nil {
 		return fmt.Errorf("%s exchange is not supported", selector.ExchangeID)
 	}
 
-	if balance, err = exchange.GetBalance(selector.Currency, selector.Asset); err != nil {
+	if balance, err = exchange.Balance(selector.Currency, selector.Asset); err != nil {
 		return fmt.Errorf("unable to get balance from exchange: %s", err.Error())
 	}
 
-	if quote, err = exchange.GetQuote(selector.ProductID); err != nil {
+	if quote, err = exchange.Quote(selector.ProductID); err != nil {
 		return fmt.Errorf("unable to get quote from exchange: %s", err.Error())
 	}
 

@@ -64,8 +64,9 @@ func (runner *TradeRunner) Run(cli *cli.Context) error {
 		exchange         model.Exchange
 		cassandraCluster *gocql.ClusterConfig
 		cassandraSession *gocql.Session
-		startBackfill    = time.Now().Add(time.Hour * -24).Truncate(time.Hour)
-		err              error
+		tradeChan        <-chan *model.Trade
+		// startBackfill    = time.Now().Add(time.Hour * -24).Truncate(time.Hour)
+		err error
 	)
 
 	if cli.NArg() == 0 {
@@ -96,32 +97,30 @@ func (runner *TradeRunner) Run(cli *cli.Context) error {
 
 	runner.cassandraClient = cassandra.NewCassandraClient(cassandraSession)
 
-	exchange = exchanges.GetExchange(selector.ExchangeID, config)
-
-	if exchange == nil {
+	if exchange, err = exchanges.GetExchange(selector.ExchangeID, config); err != nil {
 		return fmt.Errorf("%s exchange is not supported", selector.ExchangeID)
 	}
 
-	println("fetching pre-roll data:")
-
-	for {
-		trades, err := exchange.GetTrades(selector.ProductID)
-		if err != nil {
-			return fmt.Errorf("unable to get historical trades for %s: %s", selector.ProductID, err.Error())
-		}
-
-		if len(trades) == 0 {
-			println("recieved 0 historical trades from exchange, moving on to watching market...")
-			break
-		}
-
-		if trades[0].Time.Before(startBackfill) {
-			println("finished backfilling pre-roll data")
-			break
-		}
-
-		runner.insertTrades(selector.String(), trades)
-	}
+	// println("fetching pre-roll data:")
+	//
+	// for {
+	// 	trades, err := exchange.HistoricalTrades(selector.ProductID)
+	// 	if err != nil {
+	// 		return fmt.Errorf("unable to get historical trades for %s: %s", selector.ProductID, err.Error())
+	// 	}
+	//
+	// 	if len(trades) == 0 {
+	// 		println("recieved 0 historical trades from exchange, moving on to watching market...")
+	// 		break
+	// 	}
+	//
+	// 	if trades[0].Time.Before(startBackfill) {
+	// 		println("finished backfilling pre-roll data")
+	// 		break
+	// 	}
+	//
+	// 	runner.insertTrades(selector.String(), trades)
+	// }
 
 	if runner.PaperTrade {
 		println("----- STARTING PAPER TRADING -----")
@@ -129,12 +128,20 @@ func (runner *TradeRunner) Run(cli *cli.Context) error {
 		println("----- STARTING LIVE TRADING ------")
 	}
 
+	go exchange.Start(selector.ProductID)
+
+	tradeChan = exchange.Trades(selector.ProductID)
+
 	for {
-		println("mock watching live market data")
-
-		// TODO: watch live market data and feed to strategies to determine buy/sell signals
-
-		time.Sleep(time.Minute * 1)
+		select {
+		case trade := <-tradeChan:
+			println("recieved trade from exchange:", trade.String())
+			if err = runner.insertTrade(selector.ProductID, trade); err != nil {
+				println("unable to insert trade into cassandra", err.Error())
+			}
+		default:
+			time.Sleep(time.Second * 1)
+		}
 	}
 
 	return nil
@@ -146,4 +153,12 @@ func (runner *TradeRunner) insertTrades(selector string, trades []*model.Trade) 
 			println("error inserting trades into cassandra:", err.Error())
 		}
 	}
+}
+
+func (runner *TradeRunner) insertTrade(selector string, trade *model.Trade) error {
+	if err := runner.cassandraClient.InsertTrade(selector, trade); err != nil {
+		return err
+	}
+
+	return nil
 }
