@@ -1,7 +1,7 @@
 package factories
 
 import (
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/model"
 )
 
 // PeriodFactory is a factory of Periods.

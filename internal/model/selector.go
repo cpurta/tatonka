@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Selector holds info related to the exchange, and asset/currency pair tatanka
+// Selector holds info related to the exchange, and asset/currency pair tatonka
 // should pull trade info, balance info for
 type Selector struct {
 	ExchangeID string

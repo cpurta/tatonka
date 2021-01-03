@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/model"
 	coinbasepro "github.com/preichenberger/go-coinbasepro/v2"
 )
 

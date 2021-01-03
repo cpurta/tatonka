@@ -3,8 +3,8 @@ package runner
 import (
 	"fmt"
 
-	"github.com/cpurta/tatanka/extensions/strategies/rsi"
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/extensions/strategies/rsi"
+	"github.com/cpurta/tatonka/internal/model"
 	. "github.com/logrusorgru/aurora"
 	"github.com/urfave/cli/v2"
 )

@@ -1,8 +1,8 @@
-# Tatanka
+# Tatonka
 
 ## Description
 
-Tatanka is an experimental cryptocurrency trading bot written in Go and uses Apache Cassandra.
+Tatonka is an experimental cryptocurrency trading bot written in Go and uses Apache Cassandra.
 
 ### Features
 
@@ -14,11 +14,11 @@ Tatanka is an experimental cryptocurrency trading bot written in Go and uses Apa
 
 ## Disclaimer
 
-- Tatanka is still highly under development and has yet to be fully tested.
-- Tatanka is **NOT** a sure-fire profit machine. **Use it AT YOUR OWN RISK.**
-- Crypto-currency is still an experiment, and therefore so is Tatanka. Meaning, both may fail at any time.
+- Tatonka is still highly under development and has yet to be fully tested.
+- Tatonka is **NOT** a sure-fire profit machine. **Use it AT YOUR OWN RISK.**
+- Crypto-currency is still an experiment, and therefore so is Tatonka. Meaning, both may fail at any time.
 - Running a bot, and trading in general requires careful study of the risks and parameters involved. A wrong setting can cause you a major loss.
-- Never leave the bot un-monitored for long periods of time. Tatanka doesn't know when to stop, so be prepared to stop it if too much loss occurs.
+- Never leave the bot un-monitored for long periods of time. Tatonka doesn't know when to stop, so be prepared to stop it if too much loss occurs.
 
 ## Documentation
 
@@ -26,7 +26,7 @@ Tatanka is an experimental cryptocurrency trading bot written in Go and uses Apa
 
 ## Contribution
 
-We would love for you to help out with building Tatanka!
+We would love for you to help out with building Tatonka!
 
 Please see the CONTRIBUTING.md file to see how you can help the project.
 

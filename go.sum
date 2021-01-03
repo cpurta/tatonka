@@ -3,6 +3,9 @@ github.com/bitly/go-hostpool v0.0.0-20171023180738-a3a6125de932/go.mod h1:NOuUCS
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
 github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d h1:U+s90UTSYgptZMwQh2aRr3LuazLJIa+Pg3Kc1ylSYVY=
 github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d/go.mod h1:maD7wRr/U5Z6m/iR4s+kqSMx2CaBsrgA7czyZG/E6dU=
+github.com/cpurta/tatanka v0.0.0-20201023191012-e5e8b794fcaa/go.mod h1:MBNmsEDeNp/vmu1NFrl+E47j9K4tGH9wh57RXfBPy88=
+github.com/cpurta/tatonka v0.0.0-20201023191012-e5e8b794fcaa h1:IkLaUnMxmJmjBFd3Z2AUS7kumwkrevRFtCuQbr2GJ2o=
+github.com/cpurta/tatonka v0.0.0-20201023191012-e5e8b794fcaa/go.mod h1:MBNmsEDeNp/vmu1NFrl+E47j9K4tGH9wh57RXfBPy88=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/gocql/gocql v0.0.0-20200815110948-5378c8f664e9 h1:SBOCi413wRa7i5ZET6dmeg8iqpKO/hE+buwIZ7WhNg4=

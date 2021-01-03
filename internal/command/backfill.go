@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/cpurta/tatanka/internal/runner"
+	"github.com/cpurta/tatonka/internal/runner"
 	"github.com/urfave/cli/v2"
 )
 
@@ -22,7 +22,7 @@ func BackfillCommand() *cli.Command {
 				Name:        "config",
 				Usage:       "path to optional config overrides file",
 				Destination: &backfillRunner.ConfigFile,
-				Value:       "/etc/tatanka/config.yaml",
+				Value:       "/etc/tatonka/config.yaml",
 			},
 			&cli.Int64Flag{
 				Name:        "days",

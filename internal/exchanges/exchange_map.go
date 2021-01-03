@@ -3,9 +3,9 @@ package exchanges
 import (
 	"net/http"
 
-	"github.com/cpurta/tatanka/extensions/exchanges/gdax"
-	"github.com/cpurta/tatanka/internal/config"
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/extensions/exchanges/gdax"
+	"github.com/cpurta/tatonka/internal/config"
+	"github.com/cpurta/tatonka/internal/model"
 )
 
 // GetExchange returns a Exchange model using the provided configuration.

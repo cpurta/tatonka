@@ -1,12 +1,12 @@
 version: "3.1"
 services:
-  tatanka:
+  tatonka:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ../simulations:/tmp/tatanka/simulations
-      - ../config.yaml:/etc/tatanka/config.yaml:ro
+      - ../simulations:/tmp/tatonka/simulations
+      - ../config.yaml:/etc/tatonka/config.yaml:ro
     tty: true
     depends_on:
       cassandra:

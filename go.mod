@@ -1,4 +1,4 @@
-module github.com/cpurta/tatanka
+module github.com/cpurta/tatonka
 
 go 1.13
 

@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/cpurta/tatanka/internal/config"
-	"github.com/cpurta/tatanka/internal/exchanges"
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/config"
+	"github.com/cpurta/tatonka/internal/exchanges"
+	"github.com/cpurta/tatonka/internal/model"
 	. "github.com/logrusorgru/aurora"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"

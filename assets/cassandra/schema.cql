@@ -1,4 +1,4 @@
-CREATE KEYSPACE IF NOT EXISTS tatanka WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
+CREATE KEYSPACE IF NOT EXISTS tatonka WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
 
 CREATE TABLE trades (
     id uuid PRIMARY KEY,

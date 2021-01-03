@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/model"
 	"github.com/stretchr/testify/assert"
 )
 

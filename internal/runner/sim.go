@@ -1,8 +1,19 @@
 package runner
 
 import (
-	"github.com/cpurta/tatanka/internal/cassandra"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"time"
+
+	"github.com/cpurta/tatonka/extensions/strategies/rsi"
+	"github.com/cpurta/tatonka/internal/cassandra"
+	"github.com/cpurta/tatonka/internal/config"
+	"github.com/cpurta/tatonka/internal/factories"
+	"github.com/cpurta/tatonka/internal/model"
+	"github.com/gocql/gocql"
 	"github.com/urfave/cli/v2"
+	"gopkg.in/yaml.v2"
 )
 
 // SimRunner implements the trading simulation logic for the
@@ -31,7 +42,7 @@ type SimRunner struct {
 	MaxBuyLossPct        int64
 	MaxSlippagePct       int64
 	symmetrical          bool
-	RSIPeriods           int64
+	PeriodDuration       time.Duration
 	ExactBuyOrders       bool
 	ExactSellOrders      bool
 	DisableOptions       bool
@@ -44,5 +55,83 @@ type SimRunner struct {
 }
 
 func (runner *SimRunner) Run(cli *cli.Context) error {
+	var (
+		configFile       []byte
+		config           *config.Config
+		selector         *model.Selector
+		cassandraCluster *gocql.ClusterConfig
+		cassandraSession *gocql.Session
+		now              = time.Now()
+		since            = now.Add(time.Hour * -24 * time.Duration(runner.Days)).Truncate(time.Hour)
+		trades           []*model.Trade
+		periodTrades     = make([]*model.Trade, 0)
+		periodFactory    = factories.NewPeriodFactory()
+		periods          []*model.Period
+		rsiStrategy      = rsi.RSI()
+		signal           model.Signal
+		err              error
+	)
+
+	if cli.NArg() == 0 {
+		return errors.New("you must specify a selector (i.e. {exchange_slug}.{product_id})")
+	}
+
+	if selector, err = model.NewSelectorFromString(cli.Args().Get(0)); err != nil {
+		return err
+	}
+
+	if configFile, err = ioutil.ReadFile(runner.ConfigFile); err != nil {
+		return err
+	}
+
+	if err = yaml.Unmarshal(configFile, &config); err != nil {
+		return err
+	}
+
+	cassandraCluster = gocql.NewCluster(config.CassandraConfig.Cluster...)
+	cassandraCluster.Keyspace = config.CassandraConfig.Keyspace
+	cassandraCluster.Consistency = gocql.Quorum
+
+	if cassandraSession, err = cassandraCluster.CreateSession(); err != nil {
+		return fmt.Errorf("unable to connect to cassandra cluster: %s", err.Error())
+	}
+
+	defer cassandraSession.Close()
+
+	runner.cassandraClient = cassandra.NewCassandraClient(cassandraSession)
+
+	if trades, err = runner.cassandraClient.GetTradesBetween(selector.String(), now, since); err != nil {
+		return fmt.Errorf("unable to get historical trades: %s", err.Error())
+	}
+
+	var (
+		periodStart = time.Now()
+		periodEnd   = periodStart.Add(runner.PeriodDuration)
+		period      *model.Period
+	)
+
+	for _, trade := range trades {
+		if trade.Time.After(periodEnd) {
+			period = periodFactory.GetPeriod(periodTrades)
+
+			periods = append(periods, period)
+
+			periodTrades = make([]*model.Trade, 0)
+
+			periodStart.Add(runner.PeriodDuration)
+			periodEnd.Add(runner.PeriodDuration)
+		}
+
+		if trade.Time.After(periodStart) && trade.Time.Before(periodEnd) {
+			periodTrades = append(periodTrades, trade)
+		}
+	}
+
+	signal = rsiStrategy.Signal(rsiStrategy.Calculate(periods[:14]))
+
+	for i := 1; i < len(periods)-14; i++ {
+		signal = rsiStrategy.Signal(rsiStrategy.Calculate(periods[i : i+14]))
+	}
+
 	return nil
 }

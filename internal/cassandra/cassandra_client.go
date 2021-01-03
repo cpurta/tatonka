@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/model"
 	"github.com/gocql/gocql"
 )
 
@@ -22,7 +22,7 @@ func NewCassandraClient(session *gocql.Session) *cassandraClient {
 }
 
 // GetTradesBetween returns the transactions that occurred in a date range
-func (client *cassandraClient) GetTradesBetween(start, end time.Time) ([]*model.Trade, error) {
+func (client *cassandraClient) GetTradesBetween(selector string, start, end time.Time) ([]*model.Trade, error) {
 	var (
 		query  = `SELECT trade_id, price, size, time, side FROM trades WHERE selector = ? AND time BETWEEN ? AND ?`
 		iter   *gocql.Iter

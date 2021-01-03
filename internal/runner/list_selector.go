@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/model"
 	. "github.com/logrusorgru/aurora"
 	"github.com/urfave/cli/v2"
 )

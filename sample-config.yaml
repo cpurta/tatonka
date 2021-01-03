@@ -1,7 +1,7 @@
 cassandra:
   cluster:
     - "cassandra"
-  keyspace: "tatanka"
+  keyspace: "tatonka"
 
 gdax:
   api_key: "your_gdax_api_key"

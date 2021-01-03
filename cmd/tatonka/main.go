@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cpurta/tatanka/internal/command"
+	"github.com/cpurta/tatonka/internal/command"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
 	app := &cli.App{
-		Name:  "tatanka",
+		Name:  "tatonka",
 		Usage: "command-line cryptocurrency trading bot written in Golang",
 		Commands: []*cli.Command{
 			command.BackfillCommand(),

@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/cpurta/tatanka/internal/runner"
+	"github.com/cpurta/tatonka/internal/runner"
 	"github.com/urfave/cli/v2"
 )
 

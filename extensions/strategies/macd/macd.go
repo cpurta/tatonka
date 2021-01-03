@@ -3,7 +3,7 @@ package macd
 import (
 	"fmt"
 
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/model"
 )
 
 type macd struct {

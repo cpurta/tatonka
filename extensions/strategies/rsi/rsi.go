@@ -2,9 +2,8 @@ package rsi
 
 import (
 	"math"
-	"time"
 
-	"github.com/cpurta/tatanka/internal/model"
+	"github.com/cpurta/tatonka/internal/model"
 )
 
 var _ model.Strategy = &rsi{}
@@ -25,21 +24,6 @@ func (r *rsi) Description() string {
 
 func (r *rsi) Options() []model.Option {
 	return []model.Option{
-		&model.DurationOption{
-			Name:         "period",
-			Description:  "period length, same as --period_length",
-			DefaultValue: time.Minute * 2,
-		},
-		&model.DurationOption{
-			Name:         "period_length",
-			Description:  "period length, same as --period",
-			DefaultValue: time.Minute * 2,
-		},
-		&model.IntOption{
-			Name:         "min_periods",
-			Description:  "min. number of history periods",
-			DefaultValue: 52,
-		},
 		&model.IntOption{
 			Name:         "rsi_periods",
 			Description:  "number of RSI periods",
@@ -101,5 +85,13 @@ func (r *rsi) Calculate(periods []*model.Period) (float64, error) {
 }
 
 func (r *rsi) Signal(rsi float64) model.Signal {
-	return model.SellSignal
+	if rsi < 30.0 {
+		return model.BuySignal
+	}
+
+	if rsi > 82.0 {
+		return model.SellSignal
+	}
+
+	return model.NeutralSignal
 }
