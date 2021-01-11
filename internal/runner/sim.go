@@ -69,6 +69,7 @@ func (runner *SimRunner) Run(cli *cli.Context) error {
 		periods          []*model.Period
 		rsiStrategy      = rsi.RSI()
 		signal           model.Signal
+		rsiFloat float64
 		err              error
 	)
 
@@ -127,10 +128,20 @@ func (runner *SimRunner) Run(cli *cli.Context) error {
 		}
 	}
 
-	signal = rsiStrategy.Signal(rsiStrategy.Calculate(periods[:14]))
+	if rsiFloat, err = rsiStrategy.Calculate(periods[:14]); err != nil {
+		fmt.Println("unable to calculate rsi", err.Error())
+	}
+
+	signal = rsiStrategy.Signal()
+
+	fmt.Println("RSI Signal:")
 
 	for i := 1; i < len(periods)-14; i++ {
-		signal = rsiStrategy.Signal(rsiStrategy.Calculate(periods[i : i+14]))
+		if rsiFloat, err = rsiStrategy.Calculate(periods[i : i+14]); {
+			fmt.Println("unable to calculate rsi", err.Error())
+		}
+
+		signal = rsiStrategy.Signal(rsiFloat)
 	}
 
 	return nil
